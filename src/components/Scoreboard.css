@@ -401,3 +401,28 @@
   .score-num { font-size: 18px; }
   .countdown-num { font-size: 18px; }
 }
+
+/* ─── Switch Team Button ─────────────────────────── */
+.sp-switch-team {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sp-switch-team:hover {
+  border-color: var(--team-primary-40);
+  color: var(--text);
+  background: var(--team-primary-10);
+}

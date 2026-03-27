@@ -32,11 +32,11 @@ function Dashboard() {
   return (
     <div className="sp-app">
       <nav className="sp-topbar">
-        <div className="sp-topbar-brand">
+        <button className="sp-topbar-brand" onClick={() => setShowPicker(true)} title="Change team">
           <img src="/logo.png" alt="ScorePorch" className="sp-brand-logo" />
           <span className="sp-brand-text">ScorePorch</span>
           <span className="sp-brand-badge">BETA</span>
-        </div>
+        </button>
         <div className="sp-topbar-right">
           <button className="sp-topbar-team" onClick={() => setShowPicker(true)}>
             <img src={teamLogo(team.abbr)} alt={team.name} className="sp-topbar-team-logo" />
@@ -55,7 +55,7 @@ function Dashboard() {
           </button>
         </div>
       </nav>
-      <Scoreboard teamId={teamId} />
+      <Scoreboard teamId={teamId} onSwitchTeam={() => setShowPicker(true)} />
       {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
       <footer className="sp-footer">
         <span className="sp-footer-text">ScorePorch — Your personalized MLB scoreboard</span>

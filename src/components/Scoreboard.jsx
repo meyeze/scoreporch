@@ -8,7 +8,7 @@ function Skeleton({ width, height = 14 }) {
   return <div className="sp-skeleton" style={{ width, height, minWidth: width }} />
 }
 
-export default function Scoreboard({ teamId }) {
+export default function Scoreboard({ teamId, onSwitchTeam }) {
   const team = getTeamById(teamId)
   if (!team) return null
 
@@ -19,7 +19,7 @@ export default function Scoreboard({ teamId }) {
   const { data: scoresData, loading: scoresLoading } = useApi(`/api/mlb/scores?teamId=${teamId}`, { interval: 60000 })
   const { data: standingsData, loading: standingsLoading } = useApi(`/api/mlb/standings?division=${encodeURIComponent(division)}`, { interval: 300000 })
   const { data: nextGameData } = useApi(`/api/mlb/next-game?teamId=${teamId}`, { interval: 60000 })
-  const { data: newsData, loading: newsLoading } = useApi('/api/mlb/news', { interval: 1800000 })
+  const { data: newsData, loading: newsLoading } = useApi(`/api/mlb/news?teamId=${teamId}`, { interval: 1800000 })
 
   // ─── Countdown timer ───────────────────────────────────
   const [countdown, setCountdown] = useState(null)
@@ -69,7 +69,7 @@ export default function Scoreboard({ teamId }) {
   const game = scoresData || null
   const isLive = game?.isLive || false
   const standings = standingsData?.teams || []
-  const headlines = newsData?.items?.slice(0, 5) || []
+  const headlines = newsData?.items?.slice(0, 3) || []
 
   const getTeamBatters = (boxData) => {
     if (!boxData) return []
@@ -141,10 +141,10 @@ export default function Scoreboard({ teamId }) {
         </div>
 
         <div className="sp-module headlines-module">
-          <h3 className="sp-module-title">MLB HEADLINES</h3>
+          <h3 className="sp-module-title">{teamNickname.toUpperCase()} HEADLINES</h3>
           <div className="headlines-list">
             {newsLoading && headlines.length === 0 ? (
-              Array.from({ length: 4 }).map((_, i) => (
+              Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="headline-item">
                   <Skeleton width={14} height={14} />
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
@@ -230,6 +230,13 @@ export default function Scoreboard({ teamId }) {
           )}
         </div>
       </div>
+
+      {/* Switch Team */}
+      {onSwitchTeam && (
+        <button className="sp-switch-team" onClick={onSwitchTeam}>
+          ← Back to Teams
+        </button>
+      )}
     </div>
   )
 }
