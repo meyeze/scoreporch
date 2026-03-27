@@ -1,0 +1,184 @@
+/* ─── Upgrade Modal ──────────────────────────────── */
+.upgrade-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.upgrade-modal {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  background: var(--bg-solid);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 32px;
+}
+
+.upgrade-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.upgrade-close:hover {
+  color: var(--text);
+}
+
+.upgrade-heading {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.upgrade-subtext {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+/* Plans grid */
+.upgrade-plans {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .upgrade-plans {
+    grid-template-columns: 1fr;
+  }
+}
+
+.upgrade-plan {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.2s ease;
+}
+
+.upgrade-plan--highlighted {
+  border-color: var(--team-primary);
+  background: var(--team-primary-10);
+}
+
+.upgrade-plan--current {
+  opacity: 0.7;
+}
+
+.upgrade-plan-header {
+  margin-bottom: 16px;
+}
+
+.upgrade-plan-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.upgrade-plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.upgrade-plan-amount {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.upgrade-plan-period {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* Features list */
+.upgrade-plan-features {
+  list-style: none;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.upgrade-plan-features li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 5px 0;
+  padding-left: 18px;
+  position: relative;
+}
+
+.upgrade-plan-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--team-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* CTA button */
+.upgrade-plan-cta {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--team-primary);
+  background: transparent;
+  color: var(--team-primary);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.upgrade-plan-cta:hover:not(:disabled) {
+  background: var(--team-primary);
+  color: #fff;
+}
+
+.upgrade-plan-cta--current {
+  border-color: var(--border);
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.upgrade-plan-cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.upgrade-plan--highlighted .upgrade-plan-cta {
+  background: var(--team-primary);
+  color: #fff;
+}
+
+.upgrade-plan--highlighted .upgrade-plan-cta:hover:not(:disabled) {
+  filter: brightness(1.15);
+}

@@ -152,6 +152,60 @@ body::before {
   opacity: 1;
 }
 
+/* ─── Upgrade Button ─────────────────────────────── */
+.sp-topbar-upgrade {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--team-primary);
+  background: var(--team-primary-10);
+  border: 1px solid var(--team-primary-20);
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sp-topbar-upgrade:hover {
+  background: var(--team-primary-20);
+  border-color: var(--team-primary);
+}
+
+/* ─── Topbar Right Section ────────────────────────── */
+.sp-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sp-topbar-account {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--team-primary-10);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.sp-topbar-account:hover {
+  border-color: var(--team-primary);
+  background: var(--team-primary-20);
+}
+
+.sp-account-avatar {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--team-primary);
+}
+
 /* ─── Footer ──────────────────────────────────────── */
 .sp-footer {
   display: flex;
