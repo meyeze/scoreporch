@@ -1,4 +1,6 @@
 // Vercel Serverless Function — /api/mlb/standings?division=NL+East
+import { handleCors } from '../_cors.js'
+
 const MLB_API = 'https://statsapi.mlb.com/api/v1'
 
 const DIVISION_IDS = {
@@ -7,6 +9,8 @@ const DIVISION_IDS = {
 }
 
 export default async function handler(req, res) {
+  if (handleCors(req, res)) return
+
   const division = req.query.division
   if (!division) return res.status(400).json({ error: 'division required' })
 

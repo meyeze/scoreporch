@@ -161,6 +161,27 @@ body::before {
   opacity: 1;
 }
 
+/* ─── Embed Button ──────────────────────────────── */
+.sp-topbar-embed {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sp-topbar-embed:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+  color: var(--text);
+}
+
 /* ─── Upgrade Button ─────────────────────────────── */
 .sp-topbar-upgrade {
   font-family: var(--font-display);

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScorePorch Widget Test</title>
+  <style>
+    body {
+      font-family: -apple-system, sans-serif;
+      background: #f5f5f5;
+      padding: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 { color: #333; }
+    .test-container {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .test-container h2 { color: #666; font-size: 14px; margin-top: 0; }
+
+    /* Narrow sidebar test */
+    .sidebar-test { max-width: 320px; }
+
+    /* Wide test */
+    .wide-test { max-width: 600px; }
+  </style>
+</head>
+<body>
+  <h1>ScorePorch Embed Widget — Test Page</h1>
+  <p>This page tests the widget at different container widths.</p>
+
+  <div class="test-container sidebar-test">
+    <h2>Narrow (320px) — Sidebar Layout</h2>
+    <!-- Replace data-embed-id with a real embed ID from your dashboard -->
+    <!-- For local testing, the widget will try to hit localhost API -->
+    <script
+      src="../dist-widget/scoreporch-widget.js"
+      data-embed-id="test123"
+      data-team="121"
+      data-modules="scores,headlines,countdown,standings"
+      data-api="http://localhost:5180">
+    </script>
+  </div>
+
+  <div class="test-container wide-test">
+    <h2>Wide (600px) — Full Layout</h2>
+    <script
+      src="../dist-widget/scoreporch-widget.js"
+      data-embed-id="test456"
+      data-team="118"
+      data-modules="scores,headlines,countdown,standings"
+      data-api="http://localhost:5180">
+    </script>
+  </div>
+</body>
+</html>

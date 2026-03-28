@@ -1,7 +1,11 @@
 // Vercel Serverless Function — /api/mlb/next-game?teamId=121
+import { handleCors } from '../_cors.js'
+
 const MLB_API = 'https://statsapi.mlb.com/api/v1'
 
 export default async function handler(req, res) {
+  if (handleCors(req, res)) return
+
   const teamId = parseInt(req.query.teamId, 10)
   if (!teamId) return res.status(400).json({ error: 'teamId required' })
 

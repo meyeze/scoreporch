@@ -1,7 +1,11 @@
 // Vercel Serverless Function — /api/mlb/boxscore/[gamePk]
+import { handleCors } from '../../_cors.js'
+
 const MLB_API = 'https://statsapi.mlb.com/api/v1'
 
 export default async function handler(req, res) {
+  if (handleCors(req, res)) return
+
   const { gamePk } = req.query
   if (!gamePk) return res.status(400).json({ error: 'gamePk required' })
 

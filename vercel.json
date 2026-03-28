@@ -2,9 +2,19 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "headers": [
+    {
+      "source": "/widget/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/api/stripe/:path*", "destination": "/api/stripe/:path*" },
+    { "source": "/api/widget/:path*", "destination": "/api/widget/:path*" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|widget/).*)", "destination": "/index.html" }
   ]
 }

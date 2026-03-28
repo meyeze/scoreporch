@@ -1,6 +1,7 @@
 // Vercel Serverless Function — /api/mlb/news?teamId=121
 // Uses ESPN API for reliable team-specific MLB headlines
 // Falls back to general MLB news if team-specific fails
+import { handleCors } from '../_cors.js'
 
 // MLB team ID → ESPN team ID mapping
 const MLB_TO_ESPN = {
@@ -113,6 +114,8 @@ const TEAM_MAP = {
 }
 
 export default async function handler(req, res) {
+  if (handleCors(req, res)) return
+
   const teamId = parseInt(req.query.teamId, 10)
 
   try {

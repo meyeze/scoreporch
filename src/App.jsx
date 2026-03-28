@@ -8,12 +8,14 @@ import Scoreboard from './components/Scoreboard'
 import AuthPage from './components/AuthPage'
 import AuthCallback from './components/AuthCallback'
 import UpgradeModal from './components/UpgradeModal'
+import EmbedModal from './components/EmbedModal'
 
 function Dashboard() {
   const { user, tier, signOut } = useAuth()
   const { teamId, team, selectTeam, clearTeam, hasTeam } = useTeam(user?.id, tier)
   const [showPicker, setShowPicker] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [showEmbed, setShowEmbed] = useState(false)
 
   // No team selected — show picker
   if (!hasTeam || showPicker) {
@@ -43,6 +45,9 @@ function Dashboard() {
             <span className="sp-topbar-team-name">{team.name}</span>
             <span className="sp-topbar-change">Change</span>
           </button>
+          <button className="sp-topbar-embed" onClick={() => setShowEmbed(true)} title="Get embed code">
+            &lt;/&gt; Embed
+          </button>
           {tier === 'free' && (
             <button className="sp-topbar-upgrade" onClick={() => setShowUpgrade(true)}>
               Upgrade
@@ -57,6 +62,7 @@ function Dashboard() {
       </nav>
       <Scoreboard teamId={teamId} onSwitchTeam={() => setShowPicker(true)} />
       {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
+      {showEmbed && <EmbedModal teamId={teamId} onClose={() => setShowEmbed(false)} />}
       <footer className="sp-footer">
         <span className="sp-footer-text">ScorePorch — Your personalized MLB scoreboard</span>
         <span className="sp-footer-dot">·</span>
