@@ -1,116 +1,83 @@
 // Vercel Serverless Function — /api/mlb/news?teamId=121
-// Uses ESPN API for reliable team-specific MLB headlines
-// Falls back to general MLB news if team-specific fails
+// Uses MLB.com team-specific RSS feeds for reliable headlines
 import { handleCors } from '../_cors.js'
 
-// MLB team ID → ESPN team ID mapping
-const MLB_TO_ESPN = {
-  108: 1,   // LAA Angels
-  109: 15,  // ARI Diamondbacks
-  110: 2,   // BAL Orioles
-  111: 3,   // BOS Red Sox
-  112: 4,   // CHC Cubs
-  113: 5,   // CWS White Sox
-  114: 17,  // CLE Guardians
-  115: 27,  // COL Rockies
-  116: 6,   // DET Tigers
-  117: 18,  // HOU Astros
-  118: 7,   // KC Royals
-  119: 8,   // LAD Dodgers
-  120: 28,  // WSH Nationals
-  121: 9,   // NYM Mets
-  133: 10,  // OAK Athletics
-  134: 19,  // PIT Pirates
-  135: 29,  // SD Padres
-  136: 25,  // SEA Mariners
-  137: 26,  // SF Giants
-  138: 24,  // STL Cardinals
-  139: 30,  // TB Rays
-  140: 13,  // TEX Rangers
-  141: 14,  // TOR Blue Jays
-  142: 8,   // MIN Twins — ESPN uses 8
-  143: 20,  // PHI Phillies
-  144: 16,  // ATL Braves
-  145: 5,   // CWS — duplicate handled
-  146: 21,  // MIA Marlins
-  147: 10,  // NYY Yankees
-  158: 11,  // MIL Brewers
-  142: 12,  // MIN Twins
-  133: 11,  // OAK — handled
+// MLB Stats API team ID → mlb.com URL slug
+const TEAM_SLUGS = {
+  108: 'angels',
+  109: 'dbacks',
+  110: 'orioles',
+  111: 'redsox',
+  112: 'cubs',
+  113: 'reds',
+  114: 'guardians',
+  115: 'rockies',
+  116: 'tigers',
+  117: 'astros',
+  118: 'royals',
+  119: 'dodgers',
+  120: 'nationals',
+  121: 'mets',
+  133: 'athletics',
+  134: 'pirates',
+  135: 'padres',
+  136: 'mariners',
+  137: 'giants',
+  138: 'cardinals',
+  139: 'rays',
+  140: 'rangers',
+  141: 'bluejays',
+  142: 'twins',
+  143: 'phillies',
+  144: 'braves',
+  145: 'whitesox',
+  146: 'marlins',
+  147: 'yankees',
+  158: 'brewers',
 }
 
-// Fallback: try to find ESPN team ID by looking up from a broader map
-const ESPN_TEAM_IDS = {
-  // AL East
-  110: 1,   // BAL
-  111: 2,   // BOS
-  147: 10,  // NYY
-  139: 30,  // TB
-  141: 14,  // TOR
-  // AL Central
-  114: 17,  // CLE
-  113: 4,   // CWS
-  116: 6,   // DET
-  118: 7,   // KC
-  142: 9,   // MIN
-  // AL West
-  108: 3,   // LAA
-  117: 18,  // HOU
-  133: 11,  // OAK
-  136: 12,  // SEA
-  140: 13,  // TEX
-  // NL East
-  144: 15,  // ATL
-  146: 28,  // MIA
-  121: 21,  // NYM
-  143: 22,  // PHI
-  120: 24,  // WSH
-  // NL Central
-  112: 16,  // CHC
-  113: 4,   // CIN — note: CWS conflict
-  158: 8,   // MIL
-  134: 23,  // PIT
-  138: 25,  // STL
-  // NL West
-  109: 29,  // ARI
-  115: 27,  // COL
-  119: 19,  // LAD
-  135: 26,  // SD
-  137: 26,  // SF
+// Simple XML tag extractor (no library needed)
+function extractTag(xml, tag) {
+  const regex = new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>|<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'g')
+  const matches = []
+  let match
+  while ((match = regex.exec(xml)) !== null) {
+    matches.push(match[1] || match[2] || '')
+  }
+  return matches
 }
 
-// Clean merged map
-const TEAM_MAP = {
-  108: 3,   // LAA
-  109: 29,  // ARI
-  110: 1,   // BAL
-  111: 2,   // BOS
-  112: 16,  // CHC
-  113: 4,   // CWS
-  114: 17,  // CLE
-  115: 27,  // COL
-  116: 6,   // DET
-  117: 18,  // HOU
-  118: 7,   // KC
-  119: 19,  // LAD
-  120: 24,  // WSH
-  121: 21,  // NYM
-  133: 11,  // OAK
-  134: 23,  // PIT
-  135: 26,  // SD
-  136: 12,  // SEA
-  137: 26,  // SF — shares with SD, will fix
-  138: 25,  // STL
-  139: 30,  // TB
-  140: 13,  // TEX
-  141: 14,  // TOR
-  142: 9,   // MIN
-  143: 22,  // PHI
-  144: 15,  // ATL
-  145: 20,  // CIN
-  146: 28,  // MIA
-  147: 10,  // NYY
-  158: 8,   // MIL
+// Parse RSS items from XML string
+function parseRSS(xml) {
+  const items = []
+  const itemRegex = /<item>([\s\S]*?)<\/item>/g
+  let itemMatch
+
+  while ((itemMatch = itemRegex.exec(xml)) !== null) {
+    const itemXml = itemMatch[1]
+
+    const titles = extractTag(itemXml, 'title')
+    const links = extractTag(itemXml, 'link')
+    const pubDates = extractTag(itemXml, 'pubDate')
+
+    if (titles.length > 0) {
+      const title = titles[0].trim()
+      const link = links.length > 0 ? links[0].trim() : '#'
+      const pubDate = pubDates.length > 0 ? pubDates[0].trim() : ''
+
+      // Format date
+      let time = ''
+      if (pubDate) {
+        try {
+          time = new Date(pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        } catch {}
+      }
+
+      items.push({ title, link, source: 'MLB.com', time })
+    }
+  }
+
+  return items
 }
 
 export default async function handler(req, res) {
@@ -119,52 +86,48 @@ export default async function handler(req, res) {
   const teamId = parseInt(req.query.teamId, 10)
 
   try {
-    let articles = []
+    let items = []
 
-    // Try team-specific ESPN news first
-    if (teamId && TEAM_MAP[teamId]) {
-      const espnId = TEAM_MAP[teamId]
+    // Try team-specific MLB.com RSS feed
+    const slug = teamId ? TEAM_SLUGS[teamId] : null
+    if (slug) {
       try {
         const response = await fetch(
-          `https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/${espnId}/news`,
-          { headers: { 'User-Agent': 'ScorePorch/1.0' } }
+          `https://www.mlb.com/${slug}/feeds/news/rss.xml`,
+          {
+            headers: {
+              'User-Agent': 'ScorePorch/1.0',
+              'Accept': 'application/rss+xml, application/xml, text/xml',
+            },
+          }
         )
         if (response.ok) {
-          const data = await response.json()
-          articles = (data.articles || []).filter(a => a.headline)
+          const xml = await response.text()
+          items = parseRSS(xml)
         }
       } catch (e) {
-        // Fall through to general news
+        // Fall through to general feed
       }
     }
 
-    // Fall back to general MLB news if team-specific didn't work
-    if (articles.length === 0) {
+    // Fall back to general MLB news
+    if (items.length === 0) {
       try {
         const response = await fetch(
-          'https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/news',
+          'https://www.mlb.com/feeds/news/rss.xml',
           { headers: { 'User-Agent': 'ScorePorch/1.0' } }
         )
         if (response.ok) {
-          const data = await response.json()
-          articles = (data.articles || []).filter(a => a.headline)
+          const xml = await response.text()
+          items = parseRSS(xml)
         }
       } catch (e) {
         // Return empty
       }
     }
 
-    // Map to our format — always return exactly 3
-    const items = articles.slice(0, 3).map(article => ({
-      title: article.headline,
-      link: article.links?.web?.href || article.links?.api?.self?.href || '#',
-      source: article.source || 'ESPN',
-      time: article.published
-        ? new Date(article.published).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-        : '',
-    }))
-
-    res.json({ items })
+    // Return top 3
+    res.json({ items: items.slice(0, 3) })
   } catch (err) {
     console.error('News error:', err.message)
     res.json({ items: [] })
