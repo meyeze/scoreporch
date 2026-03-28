@@ -9,6 +9,7 @@ import AuthPage from './components/AuthPage'
 import AuthCallback from './components/AuthCallback'
 import UpgradeModal from './components/UpgradeModal'
 import EmbedModal from './components/EmbedModal'
+import EmbedCallout from './components/EmbedCallout'
 
 function Dashboard() {
   const { user, tier, signOut } = useAuth()
@@ -45,9 +46,12 @@ function Dashboard() {
             <span className="sp-topbar-team-name">{team.name}</span>
             <span className="sp-topbar-change">Change</span>
           </button>
-          <button className="sp-topbar-embed" onClick={() => setShowEmbed(true)} title="Get embed code">
-            &lt;/&gt; Embed
-          </button>
+          <div className="sp-embed-wrapper">
+            <button className="sp-topbar-embed" onClick={() => setShowEmbed(true)} title="Get embed code">
+              &lt;/&gt; Embed
+            </button>
+            <EmbedCallout />
+          </div>
           {tier === 'free' && (
             <button className="sp-topbar-upgrade" onClick={() => setShowUpgrade(true)}>
               Upgrade

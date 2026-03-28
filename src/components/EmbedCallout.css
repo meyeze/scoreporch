@@ -1,0 +1,97 @@
+/* Animated callout pointing up at the Embed button */
+
+.embed-callout {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 10px;
+  z-index: 100;
+  pointer-events: auto;
+  animation: embedCalloutIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,0.4));
+}
+
+@keyframes embedCalloutIn {
+  0% { opacity: 0; transform: translateY(8px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Arrow pointing up */
+.embed-callout-arrow {
+  position: absolute;
+  top: -7px;
+  right: 30px;
+  width: 14px;
+  height: 14px;
+  background: var(--team-primary, #5176ab);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+/* Body */
+.embed-callout-body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--team-primary, #5176ab);
+  border-radius: 10px;
+  padding: 10px 32px 10px 12px;
+  white-space: nowrap;
+  animation: embedCalloutPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes embedCalloutPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(81, 118, 171, 0.4); }
+  50% { box-shadow: 0 0 16px 4px rgba(81, 118, 171, 0.25); }
+}
+
+/* NEW badge */
+.embed-callout-badge {
+  font-family: var(--font-display, 'Inter', sans-serif);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* Text */
+.embed-callout-text {
+  font-family: var(--font-display, 'Inter', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+/* Close X */
+.embed-callout-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+
+.embed-callout-close:hover {
+  color: #fff;
+}
+
+/* Responsive — hide on very narrow screens */
+@media (max-width: 480px) {
+  .embed-callout {
+    display: none;
+  }
+}

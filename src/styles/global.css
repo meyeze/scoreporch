@@ -161,7 +161,11 @@ body::before {
   opacity: 1;
 }
 
-/* ─── Embed Button ──────────────────────────────── */
+/* ─── Embed Button + Callout Wrapper ─────────────── */
+.sp-embed-wrapper {
+  position: relative;
+}
+
 .sp-topbar-embed {
   font-family: var(--font-display);
   font-size: 11px;

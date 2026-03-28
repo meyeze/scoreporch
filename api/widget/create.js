@@ -31,6 +31,10 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Invalid token' })
   }
 
+  // Admin override — these emails always get Pro access for testing
+  const ADMIN_EMAILS = ['mize.nathan@gmail.com']
+  const isAdmin = user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())
+
   // Check subscription tier
   const { data: sub } = await supabase
     .from('subscriptions')
@@ -41,7 +45,7 @@ export default async function handler(req, res) {
     .limit(1)
     .single()
 
-  const tier = sub?.tier || 'free'
+  const tier = isAdmin ? 'pro' : (sub?.tier || 'free')
   if (tier === 'free') {
     return res.status(403).json({ error: 'Embed widget requires Premium or Pro subscription' })
   }

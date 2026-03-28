@@ -97,7 +97,10 @@ export function AuthProvider({ children }) {
   }, [user, fetchProfile])
 
   // Derived state
-  const tier = profile?.subscriptions?.[0]?.tier || 'free'
+  // Dev override — admin emails always get Pro access for testing
+  const ADMIN_EMAILS = ['mize.nathan@gmail.com']
+  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())
+  const tier = isAdmin ? 'pro' : (profile?.subscriptions?.[0]?.tier || 'free')
   const isAuthenticated = !!user
   const isPremium = tier === 'premium' || tier === 'pro'
   const isPro = tier === 'pro'
