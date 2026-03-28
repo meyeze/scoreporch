@@ -9,13 +9,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    flowType: 'pkce',
+    flowType: 'implicit',
     detectSessionInUrl: true,
     persistSession: true,
     autoRefreshToken: true,
-    // Use navigator.locks when available (prevents orphaned lock issue)
-    lock: typeof navigator !== 'undefined' && navigator.locks
-      ? 'navigator'
-      : undefined,
   },
 })
