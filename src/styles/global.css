@@ -207,6 +207,14 @@ body::before {
   border-color: var(--team-primary);
 }
 
+/* ─── Profile on TeamPicker page ─────────────────── */
+.sp-picker-topbar {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 50;
+}
+
 /* ─── Topbar Right Section ────────────────────────── */
 .sp-topbar-right {
   display: flex;

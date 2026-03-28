@@ -10,9 +10,10 @@ import AuthCallback from './components/AuthCallback'
 import UpgradeModal from './components/UpgradeModal'
 import EmbedModal from './components/EmbedModal'
 import EmbedCallout from './components/EmbedCallout'
+import ProfileDropdown from './components/ProfileDropdown'
 
 function Dashboard() {
-  const { user, tier, signOut } = useAuth()
+  const { user, tier } = useAuth()
   const { teamId, team, selectTeam, clearTeam, hasTeam } = useTeam(user?.id, tier)
   const [showPicker, setShowPicker] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
@@ -21,13 +22,18 @@ function Dashboard() {
   // No team selected — show picker
   if (!hasTeam || showPicker) {
     return (
-      <TeamPicker
-        onSelect={(id) => {
-          selectTeam(id)
-          setShowPicker(false)
-        }}
-        currentTeamId={teamId}
-      />
+      <>
+        <div className="sp-picker-topbar">
+          <ProfileDropdown />
+        </div>
+        <TeamPicker
+          onSelect={(id) => {
+            selectTeam(id)
+            setShowPicker(false)
+          }}
+          currentTeamId={teamId}
+        />
+      </>
     )
   }
 
@@ -57,11 +63,7 @@ function Dashboard() {
               Upgrade
             </button>
           )}
-          <button className="sp-topbar-account" onClick={signOut} title="Sign out">
-            <span className="sp-account-avatar">
-              {user?.email?.[0]?.toUpperCase() || '?'}
-            </span>
-          </button>
+          <ProfileDropdown />
         </div>
       </nav>
       <Scoreboard teamId={teamId} onSwitchTeam={() => setShowPicker(true)} />
