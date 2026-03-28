@@ -25,8 +25,14 @@ export function AuthProvider({ children }) {
 
   // Listen for auth state changes
   useEffect(() => {
+    // Safety timeout — never hang on loading for more than 6 seconds
+    const safetyTimer = setTimeout(() => {
+      setLoading(false)
+    }, 6000)
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      clearTimeout(safetyTimer)
       const currentUser = session?.user ?? null
       setUser(currentUser)
       setSession(session)
@@ -35,6 +41,9 @@ export function AuthProvider({ children }) {
       } else {
         setLoading(false)
       }
+    }).catch(() => {
+      clearTimeout(safetyTimer)
+      setLoading(false)
     })
 
     // Subscribe to changes

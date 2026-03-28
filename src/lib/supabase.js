@@ -7,4 +7,15 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Missing Supabase env vars — auth will not work')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    flowType: 'pkce',
+    detectSessionInUrl: true,
+    persistSession: true,
+    autoRefreshToken: true,
+    // Use navigator.locks when available (prevents orphaned lock issue)
+    lock: typeof navigator !== 'undefined' && navigator.locks
+      ? 'navigator'
+      : undefined,
+  },
+})
